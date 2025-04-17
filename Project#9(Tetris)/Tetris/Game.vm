@@ -1,0 +1,1518 @@
+function Game.new 2
+push constant 36
+call Memory.alloc 1
+pop pointer 0
+push constant 512
+pop this 1
+push constant 256
+pop this 2
+push constant 100
+pop this 3
+push constant 240
+pop this 4
+push this 1
+push this 3
+sub
+push constant 2
+call Math.divide 2
+pop this 6
+push this 2
+push this 4
+sub
+push constant 2
+call Math.divide 2
+pop this 5
+push this 6
+push this 3
+add
+pop this 8
+push this 5
+push this 4
+add
+pop this 7
+push constant 42
+call Random.init 1
+pop temp 0
+push constant 10
+push constant 24
+call Math.multiply 2
+call Array.new 1
+pop this 32
+push constant 10
+pop this 33
+push constant 24
+pop this 34
+push constant 0
+pop local 0
+label WHILE_EXP0
+push local 0
+push this 34
+lt
+not
+if-goto WHILE_END0
+push constant 0
+pop local 1
+label WHILE_EXP1
+push local 1
+push this 33
+lt
+not
+if-goto WHILE_END1
+push local 0
+push this 33
+call Math.multiply 2
+push local 1
+add
+push this 32
+add
+push constant 0
+pop temp 0
+pop pointer 1
+push temp 0
+pop that 0
+push local 1
+push constant 1
+add
+pop local 1
+goto WHILE_EXP1
+label WHILE_END1
+push local 0
+push constant 1
+add
+pop local 0
+goto WHILE_EXP0
+label WHILE_END0
+push constant 8000
+pop this 35
+push pointer 0
+call Game.draw 1
+pop temp 0
+push pointer 0
+return
+function Game.dispose 0
+push argument 0
+pop pointer 0
+push pointer 0
+call Memory.deAlloc 1
+pop temp 0
+push constant 0
+return
+function Game.play 1
+push argument 0
+pop pointer 0
+push pointer 0
+call Game.spawn_piece 1
+pop local 0
+label WHILE_EXP0
+push local 0
+not
+not
+if-goto WHILE_END0
+push pointer 0
+call Game.drop_piece 1
+pop temp 0
+push pointer 0
+call Game.clear_rows 1
+pop temp 0
+push pointer 0
+call Game.spawn_piece 1
+pop local 0
+goto WHILE_EXP0
+label WHILE_END0
+push constant 10
+push constant 10
+call Output.moveCursor 2
+pop temp 0
+push constant 10
+call String.new 1
+push constant 71
+call String.appendChar 2
+push constant 65
+call String.appendChar 2
+push constant 77
+call String.appendChar 2
+push constant 69
+call String.appendChar 2
+push constant 32
+call String.appendChar 2
+push constant 79
+call String.appendChar 2
+push constant 86
+call String.appendChar 2
+push constant 69
+call String.appendChar 2
+push constant 82
+call String.appendChar 2
+push constant 33
+call String.appendChar 2
+call Output.printString 1
+pop temp 0
+push constant 0
+return
+function Game.run 0
+push argument 0
+pop pointer 0
+push constant 0
+return
+function Game.mod 1
+push argument 0
+pop pointer 0
+push argument 1
+push argument 1
+push argument 2
+call Math.divide 2
+push argument 2
+call Math.multiply 2
+sub
+pop local 0
+push local 0
+push constant 0
+lt
+if-goto IF_TRUE0
+goto IF_FALSE0
+label IF_TRUE0
+push local 0
+push argument 2
+add
+pop local 0
+label IF_FALSE0
+push local 0
+return
+function Game.spawn_piece 0
+push argument 0
+pop pointer 0
+push pointer 0
+call Random.next 0
+push constant 7
+call Game.mod 3
+pop this 9
+push this 9
+push constant 0
+eq
+if-goto IF_TRUE0
+goto IF_FALSE0
+label IF_TRUE0
+push constant 3
+pop this 22
+push constant 0
+pop this 23
+push constant 4
+pop this 13
+goto IF_END0
+label IF_FALSE0
+push constant 4
+pop this 22
+push constant 0
+pop this 23
+push constant 3
+pop this 13
+label IF_END0
+push constant 0
+pop this 10
+push this 9
+push constant 0
+eq
+if-goto IF_TRUE1
+goto IF_FALSE1
+label IF_TRUE1
+push pointer 0
+call Game.set_I 1
+pop temp 0
+label IF_FALSE1
+push this 9
+push constant 1
+eq
+if-goto IF_TRUE2
+goto IF_FALSE2
+label IF_TRUE2
+push pointer 0
+call Game.set_J 1
+pop temp 0
+label IF_FALSE2
+push this 9
+push constant 2
+eq
+if-goto IF_TRUE3
+goto IF_FALSE3
+label IF_TRUE3
+push pointer 0
+call Game.set_L 1
+pop temp 0
+label IF_FALSE3
+push this 9
+push constant 3
+eq
+if-goto IF_TRUE4
+goto IF_FALSE4
+label IF_TRUE4
+push pointer 0
+call Game.set_O 1
+pop temp 0
+label IF_FALSE4
+push this 9
+push constant 4
+eq
+if-goto IF_TRUE5
+goto IF_FALSE5
+label IF_TRUE5
+push pointer 0
+call Game.set_S 1
+pop temp 0
+label IF_FALSE5
+push this 9
+push constant 5
+eq
+if-goto IF_TRUE6
+goto IF_FALSE6
+label IF_TRUE6
+push pointer 0
+call Game.set_T 1
+pop temp 0
+label IF_FALSE6
+push this 9
+push constant 6
+eq
+if-goto IF_TRUE7
+goto IF_FALSE7
+label IF_TRUE7
+push pointer 0
+call Game.set_Z 1
+pop temp 0
+label IF_FALSE7
+push pointer 0
+call Game.can_move_to_candidate 1
+not
+if-goto IF_TRUE8
+goto IF_FALSE8
+label IF_TRUE8
+push constant 0
+not
+return
+label IF_FALSE8
+push pointer 0
+call Game.move_to_candidate 1
+pop temp 0
+push pointer 0
+call Game.draw_tetrimino 1
+pop temp 0
+push constant 0
+return
+function Game.can_move_to_candidate 0
+push argument 0
+pop pointer 0
+push this 23
+push this 25
+add
+push constant 0
+lt
+push this 23
+push this 25
+add
+push this 34
+push constant 1
+sub
+gt
+or
+push this 22
+push this 24
+add
+push constant 0
+lt
+or
+push this 22
+push this 24
+add
+push this 33
+push constant 1
+sub
+gt
+or
+push pointer 0
+push this 23
+push this 25
+add
+push this 22
+push this 24
+add
+call Game.board_filled 3
+or
+if-goto IF_TRUE0
+goto IF_FALSE0
+label IF_TRUE0
+push constant 0
+return
+label IF_FALSE0
+push this 23
+push this 27
+add
+push constant 0
+lt
+push this 23
+push this 27
+add
+push this 34
+push constant 1
+sub
+gt
+or
+push this 22
+push this 26
+add
+push constant 0
+lt
+or
+push this 22
+push this 26
+add
+push this 33
+push constant 1
+sub
+gt
+or
+push pointer 0
+push this 23
+push this 27
+add
+push this 22
+push this 26
+add
+call Game.board_filled 3
+or
+if-goto IF_TRUE1
+goto IF_FALSE1
+label IF_TRUE1
+push constant 0
+return
+label IF_FALSE1
+push this 23
+push this 29
+add
+push constant 0
+lt
+push this 23
+push this 29
+add
+push this 34
+push constant 1
+sub
+gt
+or
+push this 22
+push this 28
+add
+push constant 0
+lt
+or
+push this 22
+push this 28
+add
+push this 33
+push constant 1
+sub
+gt
+or
+push pointer 0
+push this 23
+push this 29
+add
+push this 22
+push this 28
+add
+call Game.board_filled 3
+or
+if-goto IF_TRUE2
+goto IF_FALSE2
+label IF_TRUE2
+push constant 0
+return
+label IF_FALSE2
+push this 23
+push this 31
+add
+push constant 0
+lt
+push this 23
+push this 31
+add
+push this 34
+push constant 1
+sub
+gt
+or
+push this 22
+push this 30
+add
+push constant 0
+lt
+or
+push this 22
+push this 30
+add
+push this 33
+push constant 1
+sub
+gt
+or
+push pointer 0
+push this 23
+push this 31
+add
+push this 22
+push this 30
+add
+call Game.board_filled 3
+or
+if-goto IF_TRUE3
+goto IF_FALSE3
+label IF_TRUE3
+push constant 0
+return
+label IF_FALSE3
+push constant 0
+not
+return
+function Game.reset_move_to_candidate 0
+push argument 0
+pop pointer 0
+push this 11
+pop this 22
+push this 12
+pop this 23
+push this 14
+pop this 24
+push this 15
+pop this 25
+push this 16
+pop this 26
+push this 17
+pop this 27
+push this 18
+pop this 28
+push this 19
+pop this 29
+push this 20
+pop this 30
+push this 21
+pop this 31
+push constant 0
+return
+function Game.move_to_candidate 0
+push argument 0
+pop pointer 0
+push this 22
+pop this 11
+push this 23
+pop this 12
+push this 24
+pop this 14
+push this 25
+pop this 15
+push this 26
+pop this 16
+push this 27
+pop this 17
+push this 28
+pop this 18
+push this 29
+pop this 19
+push this 30
+pop this 20
+push this 31
+pop this 21
+push constant 0
+return
+function Game.drop_piece 4
+push argument 0
+pop pointer 0
+push constant 0
+pop local 3
+label WHILE_EXP0
+push constant 0
+not
+not
+if-goto WHILE_END0
+push constant 0
+pop local 2
+call Keyboard.keyPressed 0
+pop local 0
+push local 0
+push local 1
+eq
+not
+push local 0
+push constant 0
+eq
+not
+and
+if-goto IF_TRUE0
+goto IF_FALSE0
+label IF_TRUE0
+push constant 0
+not
+pop local 2
+push constant 0
+pop local 3
+push local 0
+push constant 132
+eq
+if-goto IF_TRUE1
+goto IF_FALSE1
+label IF_TRUE1
+push pointer 0
+call Game.move_right 1
+pop temp 0
+label IF_FALSE1
+push local 0
+push constant 130
+eq
+if-goto IF_TRUE2
+goto IF_FALSE2
+label IF_TRUE2
+push pointer 0
+call Game.move_left 1
+pop temp 0
+label IF_FALSE2
+push local 0
+push constant 133
+eq
+if-goto IF_TRUE3
+goto IF_FALSE3
+label IF_TRUE3
+push pointer 0
+call Game.rotate_cw 1
+pop temp 0
+label IF_FALSE3
+push local 0
+push constant 131
+eq
+if-goto IF_TRUE4
+goto IF_FALSE4
+label IF_TRUE4
+push pointer 0
+call Game.rotate_ccw 1
+pop temp 0
+label IF_FALSE4
+label IF_FALSE0
+push local 2
+not
+push local 3
+push this 35
+gt
+and
+if-goto IF_TRUE5
+goto IF_FALSE5
+label IF_TRUE5
+push constant 0
+pop local 3
+push pointer 0
+call Game.move_down 1
+not
+if-goto IF_TRUE6
+goto IF_FALSE6
+label IF_TRUE6
+push pointer 0
+push this 12
+push this 15
+add
+push this 11
+push this 14
+add
+push constant 0
+not
+call Game.set_board 4
+pop temp 0
+push pointer 0
+push this 12
+push this 17
+add
+push this 11
+push this 16
+add
+push constant 0
+not
+call Game.set_board 4
+pop temp 0
+push pointer 0
+push this 12
+push this 19
+add
+push this 11
+push this 18
+add
+push constant 0
+not
+call Game.set_board 4
+pop temp 0
+push pointer 0
+push this 12
+push this 21
+add
+push this 11
+push this 20
+add
+push constant 0
+not
+call Game.set_board 4
+pop temp 0
+push this 0
+push constant 10
+add
+pop this 0
+push pointer 0
+call Game.draw_score 1
+pop temp 0
+push constant 0
+return
+label IF_FALSE6
+label IF_FALSE5
+push local 0
+pop local 1
+push local 3
+push constant 1
+add
+pop local 3
+goto WHILE_EXP0
+label WHILE_END0
+push constant 0
+return
+function Game.clear_rows 4
+push argument 0
+pop pointer 0
+push constant 0
+pop local 3
+push this 34
+push constant 1
+sub
+pop local 0
+label WHILE_EXP0
+push local 0
+push constant 0
+gt
+push local 0
+push constant 0
+eq
+or
+not
+if-goto WHILE_END0
+push constant 0
+pop local 1
+push constant 0
+not
+pop local 2
+label WHILE_EXP1
+push local 1
+push this 33
+lt
+not
+if-goto WHILE_END1
+push pointer 0
+push local 0
+push local 1
+call Game.board_filled 3
+not
+if-goto IF_TRUE0
+goto IF_FALSE0
+label IF_TRUE0
+push constant 0
+pop local 2
+label IF_FALSE0
+push local 1
+push constant 1
+add
+pop local 1
+goto WHILE_EXP1
+label WHILE_END1
+push local 2
+if-goto IF_TRUE1
+goto IF_FALSE1
+label IF_TRUE1
+push pointer 0
+push local 0
+call Game.clear_row 2
+pop temp 0
+push local 3
+push constant 1
+add
+pop local 3
+goto IF_END1
+label IF_FALSE1
+push local 0
+push constant 1
+sub
+pop local 0
+label IF_END1
+goto WHILE_EXP0
+label WHILE_END0
+push constant 0
+pop local 0
+label WHILE_EXP2
+push local 0
+push this 34
+lt
+not
+if-goto WHILE_END2
+push constant 0
+pop local 1
+label WHILE_EXP3
+push local 1
+push this 33
+lt
+not
+if-goto WHILE_END3
+push pointer 0
+push local 0
+push local 1
+call Game.board_filled 3
+if-goto IF_TRUE2
+goto IF_FALSE2
+label IF_TRUE2
+push constant 0
+not
+call Screen.setColor 1
+pop temp 0
+push pointer 0
+push local 0
+push local 1
+call Game.draw_block 3
+pop temp 0
+goto IF_END2
+label IF_FALSE2
+push constant 0
+call Screen.setColor 1
+pop temp 0
+push pointer 0
+push local 0
+push local 1
+call Game.draw_block 3
+pop temp 0
+label IF_END2
+push local 1
+push constant 1
+add
+pop local 1
+goto WHILE_EXP3
+label WHILE_END3
+push local 0
+push constant 1
+add
+pop local 0
+goto WHILE_EXP2
+label WHILE_END2
+push constant 0
+not
+call Screen.setColor 1
+pop temp 0
+push this 0
+push local 3
+push local 3
+call Math.multiply 2
+push constant 100
+call Math.multiply 2
+add
+pop this 0
+push local 3
+push constant 4
+eq
+if-goto IF_TRUE3
+goto IF_FALSE3
+label IF_TRUE3
+push this 0
+push constant 3400
+add
+pop this 0
+label IF_FALSE3
+push pointer 0
+call Game.draw_score 1
+pop temp 0
+push constant 0
+return
+function Game.clear_row 2
+push argument 0
+pop pointer 0
+push argument 1
+pop local 0
+label WHILE_EXP0
+push local 0
+push constant 0
+gt
+not
+if-goto WHILE_END0
+push constant 0
+pop local 1
+label WHILE_EXP1
+push local 1
+push this 33
+lt
+not
+if-goto WHILE_END1
+push local 0
+push this 33
+call Math.multiply 2
+push local 1
+add
+push this 32
+add
+push local 0
+push constant 1
+sub
+push this 33
+call Math.multiply 2
+push local 1
+add
+push this 32
+add
+pop pointer 1
+push that 0
+pop temp 0
+pop pointer 1
+push temp 0
+pop that 0
+push local 1
+push constant 1
+add
+pop local 1
+goto WHILE_EXP1
+label WHILE_END1
+push local 0
+push constant 1
+sub
+pop local 0
+goto WHILE_EXP0
+label WHILE_END0
+push constant 0
+pop local 1
+label WHILE_EXP2
+push local 1
+push this 33
+lt
+not
+if-goto WHILE_END2
+push local 1
+push this 32
+add
+push constant 0
+pop temp 0
+pop pointer 1
+push temp 0
+pop that 0
+push local 1
+push constant 1
+add
+pop local 1
+goto WHILE_EXP2
+label WHILE_END2
+push constant 0
+return
+function Game.board_filled 0
+push argument 0
+pop pointer 0
+push argument 1
+push this 33
+call Math.multiply 2
+push argument 2
+add
+push this 32
+add
+pop pointer 1
+push that 0
+return
+function Game.set_board 0
+push argument 0
+pop pointer 0
+push argument 1
+push this 33
+call Math.multiply 2
+push argument 2
+add
+push this 32
+add
+push argument 3
+pop temp 0
+pop pointer 1
+push temp 0
+pop that 0
+push constant 0
+return
+function Game.rotate_ccw 0
+push argument 0
+pop pointer 0
+push this 9
+push constant 3
+eq
+if-goto IF_TRUE0
+goto IF_FALSE0
+label IF_TRUE0
+push constant 0
+not
+return
+label IF_FALSE0
+push this 15
+pop this 24
+push this 13
+push this 14
+sub
+push constant 1
+sub
+pop this 25
+push this 17
+pop this 26
+push this 13
+push this 16
+sub
+push constant 1
+sub
+pop this 27
+push this 19
+pop this 28
+push this 13
+push this 18
+sub
+push constant 1
+sub
+pop this 29
+push this 21
+pop this 30
+push this 13
+push this 20
+sub
+push constant 1
+sub
+pop this 31
+push pointer 0
+call Game.can_move_to_candidate 1
+not
+if-goto IF_TRUE1
+goto IF_FALSE1
+label IF_TRUE1
+push pointer 0
+call Game.reset_move_to_candidate 1
+pop temp 0
+push constant 0
+return
+label IF_FALSE1
+push pointer 0
+call Game.undraw_tetrimino 1
+pop temp 0
+push pointer 0
+call Game.move_to_candidate 1
+pop temp 0
+push pointer 0
+call Game.draw_tetrimino 1
+pop temp 0
+push constant 0
+not
+return
+function Game.rotate_cw 0
+push argument 0
+pop pointer 0
+push this 9
+push constant 3
+eq
+if-goto IF_TRUE0
+goto IF_FALSE0
+label IF_TRUE0
+push constant 0
+not
+return
+label IF_FALSE0
+push this 13
+push this 15
+sub
+push constant 1
+sub
+pop this 24
+push this 14
+pop this 25
+push this 13
+push this 17
+sub
+push constant 1
+sub
+pop this 26
+push this 16
+pop this 27
+push this 13
+push this 19
+sub
+push constant 1
+sub
+pop this 28
+push this 18
+pop this 29
+push this 13
+push this 21
+sub
+push constant 1
+sub
+pop this 30
+push this 20
+pop this 31
+push pointer 0
+call Game.can_move_to_candidate 1
+not
+if-goto IF_TRUE1
+goto IF_FALSE1
+label IF_TRUE1
+push pointer 0
+call Game.reset_move_to_candidate 1
+pop temp 0
+push constant 0
+return
+label IF_FALSE1
+push pointer 0
+call Game.undraw_tetrimino 1
+pop temp 0
+push pointer 0
+call Game.move_to_candidate 1
+pop temp 0
+push pointer 0
+call Game.draw_tetrimino 1
+pop temp 0
+push constant 0
+not
+return
+function Game.move_left 0
+push argument 0
+pop pointer 0
+push this 11
+push constant 1
+sub
+pop this 22
+push pointer 0
+call Game.can_move_to_candidate 1
+not
+if-goto IF_TRUE0
+goto IF_FALSE0
+label IF_TRUE0
+push pointer 0
+call Game.reset_move_to_candidate 1
+pop temp 0
+push constant 0
+return
+label IF_FALSE0
+push pointer 0
+call Game.undraw_tetrimino 1
+pop temp 0
+push pointer 0
+call Game.move_to_candidate 1
+pop temp 0
+push pointer 0
+call Game.draw_tetrimino 1
+pop temp 0
+push constant 0
+not
+return
+function Game.move_right 0
+push argument 0
+pop pointer 0
+push this 11
+push constant 1
+add
+pop this 22
+push pointer 0
+call Game.can_move_to_candidate 1
+not
+if-goto IF_TRUE0
+goto IF_FALSE0
+label IF_TRUE0
+push pointer 0
+call Game.reset_move_to_candidate 1
+pop temp 0
+push constant 0
+return
+label IF_FALSE0
+push pointer 0
+call Game.undraw_tetrimino 1
+pop temp 0
+push pointer 0
+call Game.move_to_candidate 1
+pop temp 0
+push pointer 0
+call Game.draw_tetrimino 1
+pop temp 0
+push constant 0
+not
+return
+function Game.move_up 0
+push argument 0
+pop pointer 0
+push this 12
+push constant 1
+sub
+pop this 23
+push pointer 0
+call Game.can_move_to_candidate 1
+not
+if-goto IF_TRUE0
+goto IF_FALSE0
+label IF_TRUE0
+push pointer 0
+call Game.reset_move_to_candidate 1
+pop temp 0
+push constant 0
+return
+label IF_FALSE0
+push pointer 0
+call Game.undraw_tetrimino 1
+pop temp 0
+push pointer 0
+call Game.move_to_candidate 1
+pop temp 0
+push pointer 0
+call Game.draw_tetrimino 1
+pop temp 0
+push constant 0
+not
+return
+function Game.move_down 0
+push argument 0
+pop pointer 0
+push this 12
+push constant 1
+add
+pop this 23
+push pointer 0
+call Game.can_move_to_candidate 1
+not
+if-goto IF_TRUE0
+goto IF_FALSE0
+label IF_TRUE0
+push pointer 0
+call Game.reset_move_to_candidate 1
+pop temp 0
+push constant 0
+return
+label IF_FALSE0
+push pointer 0
+call Game.undraw_tetrimino 1
+pop temp 0
+push pointer 0
+call Game.move_to_candidate 1
+pop temp 0
+push pointer 0
+call Game.draw_tetrimino 1
+pop temp 0
+push constant 0
+not
+return
+function Game.set_I 0
+push argument 0
+pop pointer 0
+push constant 0
+pop this 24
+push constant 1
+pop this 26
+push constant 2
+pop this 28
+push constant 3
+pop this 30
+push constant 1
+pop this 25
+push constant 1
+pop this 27
+push constant 1
+pop this 29
+push constant 1
+pop this 31
+push constant 0
+return
+function Game.set_J 0
+push argument 0
+pop pointer 0
+push constant 0
+pop this 24
+push constant 0
+pop this 26
+push constant 1
+pop this 28
+push constant 2
+pop this 30
+push constant 0
+pop this 25
+push constant 1
+pop this 27
+push constant 1
+pop this 29
+push constant 1
+pop this 31
+push constant 0
+return
+function Game.set_L 0
+push argument 0
+pop pointer 0
+push constant 0
+pop this 24
+push constant 1
+pop this 26
+push constant 2
+pop this 28
+push constant 2
+pop this 30
+push constant 1
+pop this 25
+push constant 1
+pop this 27
+push constant 1
+pop this 29
+push constant 0
+pop this 31
+push constant 0
+return
+function Game.set_O 0
+push argument 0
+pop pointer 0
+push constant 1
+pop this 24
+push constant 2
+pop this 26
+push constant 1
+pop this 28
+push constant 2
+pop this 30
+push constant 0
+pop this 25
+push constant 0
+pop this 27
+push constant 1
+pop this 29
+push constant 1
+pop this 31
+push constant 0
+return
+function Game.set_S 0
+push argument 0
+pop pointer 0
+push constant 0
+pop this 24
+push constant 1
+pop this 26
+push constant 1
+pop this 28
+push constant 2
+pop this 30
+push constant 1
+pop this 25
+push constant 1
+pop this 27
+push constant 0
+pop this 29
+push constant 0
+pop this 31
+push constant 0
+return
+function Game.set_T 0
+push argument 0
+pop pointer 0
+push constant 1
+pop this 24
+push constant 0
+pop this 26
+push constant 1
+pop this 28
+push constant 2
+pop this 30
+push constant 0
+pop this 25
+push constant 1
+pop this 27
+push constant 1
+pop this 29
+push constant 1
+pop this 31
+push constant 0
+return
+function Game.set_Z 0
+push argument 0
+pop pointer 0
+push constant 0
+pop this 24
+push constant 1
+pop this 26
+push constant 1
+pop this 28
+push constant 2
+pop this 30
+push constant 0
+pop this 25
+push constant 0
+pop this 27
+push constant 1
+pop this 29
+push constant 1
+pop this 31
+push constant 0
+return
+function Game.draw 0
+push argument 0
+pop pointer 0
+call Screen.clearScreen 0
+pop temp 0
+push constant 0
+not
+call Screen.setColor 1
+pop temp 0
+push pointer 0
+push this 6
+push this 5
+push this 8
+push this 7
+call Game.draw_outline 5
+pop temp 0
+push pointer 0
+call Game.draw_score 1
+pop temp 0
+push constant 0
+return
+function Game.draw_outline 0
+push argument 0
+pop pointer 0
+push argument 1
+push constant 1
+sub
+push argument 2
+push constant 1
+sub
+push argument 3
+push constant 1
+add
+push argument 4
+push constant 1
+add
+call Screen.drawRectangle 4
+pop temp 0
+push constant 0
+call Screen.setColor 1
+pop temp 0
+push argument 1
+push argument 2
+push argument 3
+push argument 4
+call Screen.drawRectangle 4
+pop temp 0
+push constant 0
+not
+call Screen.setColor 1
+pop temp 0
+push constant 0
+return
+function Game.draw_score 0
+push argument 0
+pop pointer 0
+push constant 1
+push constant 1
+call Output.moveCursor 2
+pop temp 0
+push constant 7
+call String.new 1
+push constant 83
+call String.appendChar 2
+push constant 99
+call String.appendChar 2
+push constant 111
+call String.appendChar 2
+push constant 114
+call String.appendChar 2
+push constant 101
+call String.appendChar 2
+push constant 58
+call String.appendChar 2
+push constant 32
+call String.appendChar 2
+call Output.printString 1
+pop temp 0
+push this 0
+call Output.printInt 1
+pop temp 0
+push constant 0
+return
+function Game.draw_block 4
+push argument 0
+pop pointer 0
+push this 6
+push constant 1
+add
+push argument 2
+push constant 10
+call Math.multiply 2
+add
+pop local 0
+push this 5
+push constant 1
+add
+push argument 1
+push constant 10
+call Math.multiply 2
+add
+pop local 1
+push local 0
+push constant 8
+add
+pop local 2
+push local 1
+push constant 8
+add
+pop local 3
+push local 0
+push local 1
+push local 2
+push local 3
+call Screen.drawRectangle 4
+pop temp 0
+push constant 0
+return
+function Game.draw_tetrimino 0
+push argument 0
+pop pointer 0
+push pointer 0
+push this 12
+push this 15
+add
+push this 11
+push this 14
+add
+call Game.draw_block 3
+pop temp 0
+push pointer 0
+push this 12
+push this 17
+add
+push this 11
+push this 16
+add
+call Game.draw_block 3
+pop temp 0
+push pointer 0
+push this 12
+push this 19
+add
+push this 11
+push this 18
+add
+call Game.draw_block 3
+pop temp 0
+push pointer 0
+push this 12
+push this 21
+add
+push this 11
+push this 20
+add
+call Game.draw_block 3
+pop temp 0
+push constant 0
+return
+function Game.undraw_tetrimino 0
+push argument 0
+pop pointer 0
+push constant 0
+call Screen.setColor 1
+pop temp 0
+push pointer 0
+call Game.draw_tetrimino 1
+pop temp 0
+push constant 0
+not
+call Screen.setColor 1
+pop temp 0
+push constant 0
+return
