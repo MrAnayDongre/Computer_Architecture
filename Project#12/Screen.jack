@@ -1,0 +1,236 @@
+// This file is part of www.nand2tetris.org
+// and the book "The Elements of Computing Systems"
+// by Nisan and Schocken, MIT Press.
+// File name: projects/12/Screen.jack
+
+/**
+ * A library of functions for displaying graphics on the screen.
+ * The Hack physical screen consists of 256 rows (indexed 0..255, top to bottom)
+ * of 512 pixels each (indexed 0..511, left to right). The top left pixel on 
+ * the screen is indexed (0,0).
+ */
+class Screen {
+
+    static boolean color;
+    static Array twoToThe;
+    static Array xdiv16lookup;
+    static Array ymul32lookup;
+    static Array screen;
+
+    /** Initializes the Screen. */
+    function void init() {
+        var int i;
+        
+        let screen = 16384; // manually set address of screen array so we can manage the memory 
+        let color = true;   // initial color is black
+        
+        let twoToThe = Array.new(16);
+        let twoToThe[0] = 1;
+        let i = 1;
+        while (i < 16) {
+            let twoToThe[i] = twoToThe[i-1] + twoToThe[i-1];
+            let i = i + 1;
+        }
+
+        // precompute x/16 so that drawing pixels is faster
+        let xdiv16lookup = Array.new(512);
+        let i = 0;
+        while (i < 512) {
+            let xdiv16lookup[i] = i / 16;
+            let i = i + 1;
+        }
+
+        // precompute y*32 so that drawing pixels is faster
+        let ymul32lookup = Array.new(256);
+        let i = 0;
+        while (i < 256) {
+            let ymul32lookup[i] = i * 32;
+            let i = i + 1;
+        }
+
+        return;
+    }
+
+    /** Erases the entire screen. */
+    function void clearScreen() {
+        var int i;
+        let i = 0;
+        while (i < 8192) {
+            let screen[i] = 0;
+            let i = i + 1;
+        }
+        return;
+    }
+
+    /** Sets the current color, to be used for all subsequent drawXXX commands.
+     *  Black is represented by true, white by false. */
+    function void setColor(boolean b) {
+        let color = b;
+        return;
+    }
+
+
+    /** Draws the (x,y) pixel, using the current color. */
+    function void drawPixel(int x, int y) {
+        var int address, value, mod, mask;
+
+        let address = ymul32lookup[y] + xdiv16lookup[x]; // y*32 + x/16
+        let value = screen[address];
+        let mod = x & 15;
+        let mask = twoToThe[mod];
+        if (color) {
+            let value = value | mask;
+        } else {
+            let value = value & ~mask;
+        }
+        let screen[address] = value;
+        return;
+    }
+
+    /** Draws a line from pixel (x1,y1) to pixel (x2,y2), using the current color. */
+    function void drawLine(int x1, int y1, int x2, int y2) {
+        var int dx, dy, sx, sy, err, e2;
+
+        // vertical line
+        if (x1 = x2) {
+            let dy = y2 - y1;
+            if (dy > 0) {
+                let dy = 1;
+            } else {
+                let dy = -1;
+            }
+            while (~(y2 = y1)) {
+                do Screen.drawPixel(x1, y1);
+                let y1 = y1 + dy;  
+            }
+            do Screen.drawPixel(x1, y1);
+            return;
+        }
+
+        // horizontal line
+        if (y1 = y2) {
+            let dx = x2 - x1;
+            if (dx > 0) {
+                let dx = 1;
+            } else {
+                let dx = -1;
+            }
+            while (~(x2 = x1)) {
+                do Screen.drawPixel(x1, y1);
+                let x1 = x1 + dx;  
+            }
+            do Screen.drawPixel(x1, y1);
+            return;
+        }
+
+
+        // general line (Bresenham's algorithm)
+        if (x1 < x2) {
+            let sx = 1;
+            let dx = x2 - x1;
+        } else {
+            let sx = -1;
+            let dx = x1 - x2;
+        }
+        if (y1 < y2) {
+            let sy = 1;
+            let dy = y1 - y2;
+        } else {
+            let sy = -1;
+            let dy = y2 - y1;
+        }
+        let err = dx + dy;
+
+        while (true) {
+            do Screen.drawPixel(x1, y1);
+            if ((x1 = x2) & (y1 = y2)) {
+                return;
+            }
+            let e2 = 2*err;
+            if ((e2 > dy) | (e2 = dy)) {
+                if (x1 = x2) {
+                    return;
+                }
+                let err = err + dy;
+                let x1 = x1 + sx;
+            }
+            if ((e2 < dx) | (e2 = dx)) {
+                if (y1 = y2) {
+                    return;
+                }
+                let err = err + dx;
+                let y1 = y1 + sy;
+            }
+        }
+        return;
+    }
+
+    /** Draws a filled rectangle whose top left corner is (x1, y1)
+     * and bottom right corner is (x2,y2), using the current color. */
+    function void drawRectangle(int x1, int y1, int x2, int y2) {
+        while (~(y2 = y1)) {
+            do Screen.drawLine(x1, y1, x2, y1);
+            let y1 = y1 + 1;
+        }
+        return;
+    }
+
+    /** Draws a filled circle of radius r<=181 around (x,y), using the current color. */
+    function void drawCircle(int xc, int yc, int r) {
+        // Midpoint circle algorithm
+        var int x, y, d, xmy;
+        let x = 0;
+        let y = r;
+        let d = 3 - (r+r);
+        do Screen.drawLine(xc, yc-y, xc, yc+y);
+        do Screen.drawLine(xc-y, yc, xc+y, yc);
+        while ((y > x) | (y = x)) {
+            let x = x + 1;
+            if (d > 0) {
+                let y = y - 1;
+                let xmy = x - y;
+                let d = d + xmy + xmy + xmy + xmy + 10;
+            } else {
+                let d = d + x + x + x + x + 6;
+            }
+            do Screen.drawLine(xc-x, yc+y, xc+x, yc+y);
+            do Screen.drawLine(xc-x, yc-y, xc+x, yc-y);
+            do Screen.drawLine(xc-y, yc+x, xc+y, yc+x);
+            do Screen.drawLine(xc-y, yc-x, xc+y, yc-x);
+        }
+        return;
+    }
+
+    function void outlineCircle(int xc, int yc, int r) {
+        // Midpoint circle algorithm
+        var int x, y, d, xmy;
+        let x = 0;
+        let y = r;
+        let d = 3 - (r+r);
+
+        do Screen.drawPixel(xc, yc+y);
+        do Screen.drawPixel(xc, yc-y);
+        do Screen.drawPixel(xc+y, yc);
+        do Screen.drawPixel(xc-y, yc);
+        
+        while ((y > x) | (y = x)) {
+            let x = x + 1;
+            if (d > 0) {
+                let y = y - 1;
+                let xmy = x - y;
+                let d = d + xmy + xmy + xmy + xmy + 10;
+            } else {
+                let d = d + x + x + x + x + 6;
+            }
+            do Screen.drawPixel(xc+x, yc+y);
+            do Screen.drawPixel(xc-x, yc+y);
+            do Screen.drawPixel(xc+x, yc-y);
+            do Screen.drawPixel(xc-x, yc-y);
+            do Screen.drawPixel(xc+y, yc+x);
+            do Screen.drawPixel(xc-y, yc+x);
+            do Screen.drawPixel(xc+y, yc-x);
+            do Screen.drawPixel(xc-y, yc-x);
+        }
+        return;
+    }
+}
